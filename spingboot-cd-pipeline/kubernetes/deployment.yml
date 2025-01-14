@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chiradev
+  labels:
+    app: chiradev
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: chiradev
+  template:
+    metadata:
+      labels:
+        app: chiradev
+    spec:
+      containers:
+      - name: chiradev
+        image: chiradev/chiradevbackend:9
+        ports:
+        - containerPort: 8080

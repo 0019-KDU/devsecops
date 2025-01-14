@@ -1,0 +1,22 @@
+pipeline {
+    agent { label 'build' }
+    parameters {
+        password(name: 'PASSWD', defaultValue: '', description: 'Please Enter your Gitlab password')
+        string(name: 'IMAGETAG', defaultValue: '1', description: 'Please Enter the Image Tag to Deploy?')
+    }
+    stages {
+        stage('Deploy') {
+            steps {
+                git branch: 'main', credentialsId: 'GitlabCred', url: 'https://gitlab.com/chiradev/spingboot-cd-pipeline.git'
+                dir ("./kubernetes") {
+                    sh "sed -i 's/image: chiradev.*/image: chiradev\\/chiradevbackend:$IMAGETAG/g' deployment.yml"
+                }
+                sh 'git commit -a -m "New deployment for Build $IMAGETAG"'
+                script {
+                    def encodedPassword = URLEncoder.encode(env.PASSWD, "UTF-8")
+                    sh "git push https://chirantharavishka:${encodedPassword}@gitlab.com/chiradev/spingboot-cd-pipeline.git"
+                }
+            }
+        }
+    }
+}
