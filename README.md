@@ -88,6 +88,44 @@ This documentation provides a detailed description of the CI/CD pipeline workflo
 
 To set up a Production-Grade DevSecOps CI/CD Pipeline using Jenkins, SonarQube, Minikube, and ArgoCD, follow the detailed steps below:
 
+## Initial Setup
+
+### Launch an EC2 Instance
+
+1. **Login to AWS Management Console:**
+   - Navigate to the EC2 Dashboard.
+   - Launch a new instance.
+   - Choose Ubuntu as the AMI.
+   - Select an instance type (e.g., t2.micro).
+   - Configure security groups to allow SSH, HTTP, and port 8080.
+
+### Install Jenkins
+
+```bash
+#!/bin/bash
+# Update packages
+sudo apt-get update
+
+# Install Java
+sudo apt-get install -y openjdk-11-jdk
+
+# Add Jenkins repo key to your system
+wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -
+
+# Add Jenkins to your system's sources
+sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+
+# Update package list
+sudo apt-get update
+
+# Install Jenkins
+sudo apt-get install -y jenkins
+
+# Start Jenkins service
+sudo systemctl start jenkins
+
+```
+
 ## Jenkins Setup for SonarQube and AWS Integration
 
 ## Prerequisites
@@ -128,16 +166,20 @@ Make sure the following Jenkins plugins are installed on the Jenkins Master serv
 To set up the environment, run the setup script:
 
 ```
+
 $ sudo ./setup.sh
+
 ```
 
 ## Step 3: Install Sonrqube on the t2.medium server
 
 ```
+
 $ sudo apt update
 $ sudo apt install -y docker.io
 $ sudo usermod -a -G docker ubuntu
 $ sudo docker run -d --name sonar -p 9000:9000 sonarqube:lts-community
+
 ```
 
 ## Step 4: Add necessary credentials
@@ -160,27 +202,35 @@ Create a t2.medium EC2 instance with 4 GB storage for Minikube
 ## Setup Minikube
 
 ```
+
 $ Install Docker
 $ sudo apt update && sudo apt -y install docker.io
 
- Install kubectl
+Install kubectl
 $ curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.23.7/bin/linux/amd64/kubectl && chmod +x ./kubectl && sudo mv ./kubectl /usr/local/bin/kubectl
 
- Install Minikube
+Install Minikube
 $ curl -Lo minikube https://storage.googleapis.com/minikube/releases/v1.23.2/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/
 
- Start Minikube
-$  sudo apt install conntrack
-$  minikube start --vm-driver=none
+Start Minikube
+$ sudo apt install conntrack
+$ minikube start --vm-driver=none
+
 ```
 
 ## Setup ArgoCD
 
 ```
+
 $ kubectl create namespace argocd
 $ kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 $ kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "NodePort"}}'
 
 For version 1.9 or later:
 $ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d && echo
+
+```
+
+```
+
 ```
