@@ -282,11 +282,8 @@ $ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.p
 
 ```
 
-# Project Screenshots
-
 Here are the screenshots from the project:
-
-| ![Screenshot 1](docs/Screenshot%202025-01-14%20000305.png) | ![Screenshot 2](docs/Screenshot%202025-01-14%20023032.png) |     |
-| ---------------------------------------------------------- | ---------------------------------------------------------- | --- |
-| ![Screenshot 5](docs/Screenshot%202025-01-14%20023355.png) | ![Screenshot 6](docs/Screenshot%202025-01-14%20160346.png) |
-| ![Screenshot 7](docs/Screenshot%202025-01-14%20022912.png) | ![Screenshot 8](docs/Screenshot%202025-01-14%20162142.png) | !   |
+| ![Screenshot 1](docs/Screenshot%202025-01-14%20000305.png) | ![Screenshot 2](docs/Screenshot%202025-01-14%20162142.png) |  
+| ---------------------------------------------------------- | ---------------------------------------------------------- |  
+| ![Screenshot 4](docs/Screenshot%202025-01-14%20022049.png) | ![Screenshot 5](docs/Screenshot%202025-01-14%20023355.png) | ![Screenshot 6](docs/Screenshot%202025-01-14%20022912.png) |  
+| ![Screenshot 7](docs/Screenshot%202025-01-14%20160346.png) | ![Screenshot 8](docs/Screenshot%202025-01-14%20023032.png) |
