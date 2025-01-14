@@ -1,6 +1,6 @@
 # CI/CD Pipeline Documentation
 
-![CI/CD Pipeline Overview](.https://github.com/0019-KDU/devsecops/tree/main/docs/Screenshot 2025-01-14 131630.png)
+![CI/CD Pipeline Overview](docs/Screenshot 2025-01-14 131630.png)
 
 ## Overview
 
