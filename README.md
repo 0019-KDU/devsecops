@@ -85,3 +85,102 @@ This documentation provides a detailed description of the CI/CD pipeline workflo
 - **Image Scanning**: Trivy
 - **Deployment**: ArgoCD
 - **Cluster Management**: Kubernetes
+
+To set up a Production-Grade DevSecOps CI/CD Pipeline using Jenkins, SonarQube, Minikube, and ArgoCD, follow the detailed steps below:
+
+## Jenkins Setup for SonarQube and AWS Integration
+
+## Prerequisites
+
+### EC2 Servers
+
+1. **Build Server:**
+
+   - **Instance Type:** t2.micro
+   - **Storage:** 15 GB (EBS volume)
+   - **Use Case:** This server will be used to build the project.
+
+2. **SonarQube Server:**
+   - **Instance Type:** t2.medium
+   - **Memory:** 4 GB
+   - **Use Case:** This server will run SonarQube for static code analysis.
+
+## Step 1: Ensure Necessary Plugins Are Installed on Jenkins Master
+
+Make sure the following Jenkins plugins are installed on the Jenkins Master server:
+
+- **Parameterized Trigger Plugin:** Allows triggering other jobs with parameters.
+- **GitLab Plugin:** Integrates Jenkins with GitLab to trigger builds and retrieve information from repositories.
+- **Docker Pipeline:** Allows using Docker commands within Jenkins pipelines.
+- **Pipeline: AWS Steps:** AWS steps for integrating Jenkins pipelines with AWS services.
+- **SonarQube Scanner:** Integrates Jenkins with SonarQube to run code quality scans.
+- **Quality Gates Plugin:** This plugin ensures the code passes the quality gate in SonarQube before continuing the pipeline.
+
+### How to Install Plugins:
+
+1. Go to Jenkins Dashboard.
+2. Click on "Manage Jenkins" > "Manage Plugins."
+3. Under the "Available" tab, search for the plugins by name (e.g., "GitLab Plugin", "SonarQube Scanner").
+4. Select the plugins and click "Install without restart."
+
+## Step 2: Install Docker, Java8, Java11 & Trivy on Build Server
+
+To set up the environment, run the setup script:
+
+```
+$ sudo ./setup.sh
+```
+
+## Step 3: Install Sonrqube on the t2.medium server
+
+```
+$ sudo apt update
+$ sudo apt install -y docker.io
+$ sudo usermod -a -G docker ubuntu
+$ sudo docker run -d --name sonar -p 9000:9000 sonarqube:lts-community
+```
+
+## Step 4: Add necessary credentials
+
+- [ ] Generate Sonarqube token of type "global analysis token" and add it as Jenkins credential of type "secret text"
+- [ ] Add dockerhub credentials as username/password type
+- [ ] Add Gitlab credentials
+- [ ] Add Build server credentials for Jenkins master to connect
+
+## Step 5: Enable Sonarqube webhook for Quality Gates & Install dependency-check plugin
+
+- [ ] Generate webhook & add the Jenkins URL as follows - http://URL:8080/sonarqube-webhook/
+
+EX-http://ec2-54-82-33-243.compute-1.amazonaws.com:8080/sonarqube-webhook/
+
+## Minikube Setup (One EC2 Server)
+
+Create a t2.medium EC2 instance with 4 GB storage for Minikube
+
+## Setup Minikube
+
+```
+$ Install Docker
+$ sudo apt update && sudo apt -y install docker.io
+
+ Install kubectl
+$ curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.23.7/bin/linux/amd64/kubectl && chmod +x ./kubectl && sudo mv ./kubectl /usr/local/bin/kubectl
+
+ Install Minikube
+$ curl -Lo minikube https://storage.googleapis.com/minikube/releases/v1.23.2/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/
+
+ Start Minikube
+$  sudo apt install conntrack
+$  minikube start --vm-driver=none
+```
+
+## Setup ArgoCD
+
+```
+$ kubectl create namespace argocd
+$ kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+$ kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "NodePort"}}'
+
+For version 1.9 or later:
+$ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d && echo
+```
