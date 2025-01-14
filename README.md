@@ -75,6 +75,53 @@ This documentation provides a detailed description of the CI/CD pipeline workflo
 
 ---
 
+# CI/CD Process Overview
+
+When a developer pushes code to the source code repository, it triggers an automated CI/CD pipeline. The process flows as follows:
+
+1. **Jenkins Build Process**:
+
+   - Jenkins picks up the code and runs the build process using **Maven**, which compiles the code and executes unit tests.
+
+2. **Code Coverage Check**:
+
+   - Once the build succeeds, **JaCoCo** measures the code coverage to ensure adequate testing.
+
+3. **Security Checks**:
+
+   - The code undergoes **Security Checks**:
+     - **SCA** tool scans all dependencies for vulnerabilities.
+     - **SAST** analysis checks the source code itself for security issues.
+
+4. **SonarQube Quality Analysis**:
+
+   - After the security checks, **SonarQube** performs quality analysis, checking for code smells and maintaining code quality standards through defined **quality gates**.
+
+5. **Docker Image Build**:
+
+   - After passing the quality checks, **Docker** builds a container image of the application.
+
+6. **Trivy Image Scan**:
+
+   - The built Docker image is then scanned by **Aqua Trivy** to ensure it's free from known vulnerabilities.
+
+7. **Smoke Tests**:
+
+   - Once the image is verified as secure, the pipeline runs **smoke tests** to verify basic functionality.
+
+8. **CD Process**:
+
+   - Upon successful completion of all CI stages, the pipeline triggers the **CD** process.
+   - The deployment manifests in the **YAML repository** are updated with the new image details.
+
+9. **Argo CD Deployment**:
+   - **Argo CD**, watching the manifest repository, detects these changes and automatically syncs them to the **Kubernetes cluster**.
+   - The **Argo Operator** manages the deployment process, ensuring the application is properly deployed and running in the Kubernetes environment.
+
+---
+
+This automated process ensures that every code change goes through proper testing, security scanning, and quality checks before reaching production, maintaining high standards of code quality and security while enabling rapid deployment.
+
 ## Tools Summary
 
 - **Build and Test**: Maven
@@ -234,3 +281,12 @@ $ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.p
 ```
 
 ```
+
+# Project Screenshots
+
+Here are the screenshots from the project:
+
+| ![Screenshot 1](docs/Screenshot%202025-01-14%20000305.png) | ![Screenshot 2](docs/Screenshot%202025-01-14%20023032.png) |     |
+| ---------------------------------------------------------- | ---------------------------------------------------------- | --- |
+| ![Screenshot 5](docs/Screenshot%202025-01-14%20023355.png) | ![Screenshot 6](docs/Screenshot%202025-01-14%20160346.png) |
+| ![Screenshot 7](docs/Screenshot%202025-01-14%20022912.png) | ![Screenshot 8](docs/Screenshot%202025-01-14%20162142.png) | !   |
